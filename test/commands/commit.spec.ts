@@ -1,4 +1,3 @@
-import fs from 'fs/promises';
 import { Arguments } from 'yargs';
 import { Options, handler } from '../../src/commands/commit';
 
