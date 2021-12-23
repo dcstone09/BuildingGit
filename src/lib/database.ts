@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 import path from 'path'
 import { open } from 'fs/promises'
-import { existsSync } from 'fs'
 import Blob from "./blob"
 
 export default class Database {
@@ -33,7 +32,7 @@ export default class Database {
         const dir = ''
         const tempPath = ''
 
-        const file = await open(objectPath, 'w+')
+        // const file = await open(objectPath, 'w+')
         
 
     }
