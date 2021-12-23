@@ -10,4 +10,12 @@ describe('Blob', () => {
 
         expect(blob.data).toEqual('data')
     })
+
+    it('size', () => {
+        const data = 'data';
+
+        const blob = new Blob(data)
+
+        expect(blob.size).toEqual(4)
+    })
 })

@@ -22,10 +22,12 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
   const files = await workspace.listFiles()
 
-  files.forEach(async path => {
+  for (const path of files) {
     const data = await workspace.readFile(path)
     const blob = new Blob(data)
-  })
+
+    await database.store(blob)
+  }
 
   process.exit(0);
 };
