@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import path from 'path'
-import { open } from 'fs/promises'
+import { open, mkdir } from 'fs/promises'
+import { existsSync } from 'fs'
 import Blob from "./blob"
 
 export default class Database {
@@ -27,11 +28,13 @@ export default class Database {
     }
 
     private async writeObject(oid: string, content: string) {
-        const objectPath = path.resolve(this.pathName, oid.slice(0, 2), oid.slice(2, oid.length))
+        const dir = path.resolve(this.pathName, oid.slice(0, 2), oid.slice(2, oid.length))
 
-        const dir = ''
         const tempPath = ''
 
+        if (!existsSync(dir)){
+            await mkdir(dir, { recursive: true });
+        }
         // const file = await open(objectPath, 'w+')
         
 
