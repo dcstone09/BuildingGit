@@ -1,7 +1,8 @@
 import crypto from 'crypto'
 import path from 'path'
-import { open, mkdir, rename, mkdtemp, writeFile } from 'fs/promises'
+import { mkdir, rename, writeFile } from 'fs/promises'
 import { existsSync } from 'fs'
+import { deflate } from 'zlib'
 import Blob from "./blob"
 
 export default class Database {
@@ -36,8 +37,10 @@ export default class Database {
             await mkdir(dirName, { recursive: true });
         }
 
-        await writeFile(tempPath, content, { flag: "w" })
-        await rename(tempPath, objectPath)
+        deflate(content, async (err, data) => {
+            await writeFile(tempPath, data, { flag: "w" })
+            await rename(tempPath, objectPath)
+        })   
     }
 
     private generateTempName() {
