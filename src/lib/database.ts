@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import path from 'path'
-import { open, mkdir } from 'fs/promises'
+import { open, mkdir, rename, mkdtemp, writeFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import Blob from "./blob"
 
@@ -28,15 +28,20 @@ export default class Database {
     }
 
     private async writeObject(oid: string, content: string) {
-        const dir = path.resolve(this.pathName, oid.slice(0, 2), oid.slice(2, oid.length))
+        const objectPath = path.resolve(this.pathName, oid.slice(0, 2), oid.slice(2, oid.length))
+        const dirName = path.dirname(objectPath)
+        const tempPath = path.resolve(dirName, this.generateTempName())
 
-        const tempPath = ''
-
-        if (!existsSync(dir)){
-            await mkdir(dir, { recursive: true });
+        if (!existsSync(dirName)) {
+            await mkdir(dirName, { recursive: true });
         }
-        // const file = await open(objectPath, 'w+')
-        
 
+        await writeFile(tempPath, content, { flag: "w" })
+        await rename(tempPath, objectPath)
+    }
+
+    private generateTempName() {
+        const name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+        return `temp_obj_${name}`;
     }
 }
