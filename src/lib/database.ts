@@ -4,6 +4,7 @@ import { mkdir, rename, writeFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import { deflate } from 'zlib'
 import Blob from "./blob"
+import Tree from './tree'
 
 export default class Database {
     public pathName: string;
