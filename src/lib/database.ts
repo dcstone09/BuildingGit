@@ -1,7 +1,10 @@
 import crypto from 'crypto'
 import path from 'path'
-import { open } from 'fs/promises'
+import { mkdir, rename, writeFile } from 'fs/promises'
+import { existsSync } from 'fs'
+import { deflate } from 'zlib'
 import Blob from "./blob"
+import Tree from './tree'
 
 export default class Database {
     public pathName: string;
@@ -28,12 +31,21 @@ export default class Database {
 
     private async writeObject(oid: string, content: string) {
         const objectPath = path.resolve(this.pathName, oid.slice(0, 2), oid.slice(2, oid.length))
+        const dirName = path.dirname(objectPath)
+        const tempPath = path.resolve(dirName, this.generateTempName())
 
-        const dir = ''
-        const tempPath = ''
+        if (!existsSync(dirName)) {
+            await mkdir(dirName, { recursive: true });
+        }
 
-        // const file = await open(objectPath, 'w+')
-        
+        deflate(content, async (err, data) => {
+            await writeFile(tempPath, data, { flag: "w" })
+            await rename(tempPath, objectPath)
+        })   
+    }
 
+    private generateTempName() {
+        const name = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+        return `temp_obj_${name}`;
     }
 }
